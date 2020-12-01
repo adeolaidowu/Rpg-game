@@ -39,9 +39,28 @@ namespace Rpg_game.Services
             return response;
         }
 
-        public Task<Response<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updateCharacter)
+        public async Task<Response<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updateCharacter)
         {
-            throw new NotImplementedException();
+            var response = new Response<GetCharacterDto>();
+            try
+            {
+                var character = await _ctx.Characters.FirstOrDefaultAsync(c => c.Id == updateCharacter.Id);
+                character.Name = updateCharacter.Name;
+                character.HitPoints = updateCharacter.HitPoints;
+                character.Strength = updateCharacter.Strength;
+                character.Defense = updateCharacter.Defense;
+                character.Intelligence = updateCharacter.Intelligence;
+                character.Class = updateCharacter.Class;
+                _ctx.Update(character);
+                await _ctx.SaveChangesAsync();
+                response.Data = _mapper.Map<GetCharacterDto>(character);
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message;
+            }
+            return response;
         }
 
         public async Task<Response<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter)
@@ -56,14 +75,34 @@ namespace Rpg_game.Services
 
         }
 
-        public Task<Response<GetCharacterDto>> GetCharacter(int id)
+        public async Task<Response<GetCharacterDto>> GetCharacter(int id)
         {
-            throw new NotImplementedException();
+            var selectedCharacter = await _ctx.Characters.FirstOrDefaultAsync(b => b.Id == id && b.User.Id == GetUserId());
+            var response = new Response<GetCharacterDto>();
+            response.Data = _mapper.Map<GetCharacterDto>(selectedCharacter);
+            return response;
+
         }
 
-        public Task<Response<List<GetCharacterDto>>> DeleteCharacter()
+        public async Task<Response<List<GetCharacterDto>>> DeleteCharacter(int Id)
         {
-            throw new NotImplementedException();
+            var response = new Response<List<GetCharacterDto>>();
+            try
+            {
+                var character = await _ctx.Characters.FirstOrDefaultAsync(d => d.Id == Id && d.User.Id == GetUserId());
+                if(character != null)
+                {
+                    _ctx.Remove(character);
+                    await _ctx.SaveChangesAsync();
+                    response.Data = _ctx.Characters.Where(b => b.User.Id == GetUserId()).Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+                }                
+            }
+            catch (Exception e)
+            {
+                response.Success = false;
+                response.Message = e.Message;
+            }
+            return response;
         }
 
     }

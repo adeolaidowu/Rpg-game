@@ -8,6 +8,7 @@ namespace Rpg_game.Dtos
 {
     public class UpdateCharacterDto
     {
+        public int Id { get; set; }
         public string Name { get; set; } = "Hagrid";
         public int HitPoints { get; set; } = 100;
         public int Strength { get; set; } = 10;

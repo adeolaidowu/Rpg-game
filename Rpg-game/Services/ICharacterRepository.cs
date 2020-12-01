@@ -14,7 +14,7 @@ namespace Rpg_game.Services
         Task<Response<GetCharacterDto>> GetCharacter(int id);
         Task<Response<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter);
         Task<Response<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updateCharacter);
-        Task<Response<List<GetCharacterDto>>> DeleteCharacter();
+        Task<Response<List<GetCharacterDto>>> DeleteCharacter(int Id);
 
         
     }
