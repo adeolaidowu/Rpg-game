@@ -9,12 +9,12 @@ namespace Rpg_game.Services
 {
     interface ICharacterRepository
     {
-        Task<Response<IEnumerable<GetCharacterDto>>> GetAllCharacters();
+        Task<Response<List<GetCharacterDto>>> GetAllCharacters();
 
         Task<Response<GetCharacterDto>> GetCharacter(int id);
-        Task<Response<IEnumerable<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter);
+        Task<Response<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter);
         Task<Response<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updateCharacter);
-        Task<Response<IEnumerable<GetCharacterDto>>> DeleteCharacter(int id);
+        Task<Response<List<GetCharacterDto>>> DeleteCharacter();
 
         
     }

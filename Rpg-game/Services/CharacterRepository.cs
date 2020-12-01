@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Rpg_game.Data;
 using Rpg_game.Dtos;
 using Rpg_game.Models;
@@ -30,9 +31,12 @@ namespace Rpg_game.Services
             return id;
         }
 
-        public Task<Response<IEnumerable<GetCharacterDto>>> GetAllCharacters()
+        public async Task<Response<List<GetCharacterDto>>> GetAllCharacters()
         {
-            throw new NotImplementedException();
+            var characters = await _ctx.Characters.Where(c => c.User.Id == GetUserId()).Select(a => _mapper.Map<GetCharacterDto>(a)).ToListAsync();
+            var response = new Response<List<GetCharacterDto>>();
+            response.Data = characters;
+            return response;
         }
 
         public Task<Response<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto updateCharacter)
@@ -40,13 +44,13 @@ namespace Rpg_game.Services
             throw new NotImplementedException();
         }
 
-        public async Task<Response<IEnumerable<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter)
+        public async Task<Response<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter)
         {
             var characterToAdd = _mapper.Map<Character>(newCharacter);
             await _ctx.Characters.AddAsync(characterToAdd);
             await _ctx.SaveChangesAsync();
-            var userCharacters = _ctx.Characters.Where(c => c.Id == GetUserId()).AsEnumerable();
-            var response = new Response<IEnumerable<GetCharacterDto>>();
+            var userCharacters = _ctx.Characters.Where(c => c.Id == GetUserId()).ToList();
+            var response = new Response<List<GetCharacterDto>>();
             response.Data = userCharacters.Select(a => _mapper.Map<GetCharacterDto>(a)).ToList();
             return response;
 
@@ -57,7 +61,7 @@ namespace Rpg_game.Services
             throw new NotImplementedException();
         }
 
-        public Task<Response<IEnumerable<GetCharacterDto>>> DeleteCharacter(int id)
+        public Task<Response<List<GetCharacterDto>>> DeleteCharacter()
         {
             throw new NotImplementedException();
         }
